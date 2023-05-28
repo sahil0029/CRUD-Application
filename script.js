@@ -1,3 +1,4 @@
+// validate form inputs before submitting 
 function validateForm(){
     var name = document.getElementById("name").value;
     var age = document.getElementById("age").value;
@@ -14,7 +15,7 @@ function validateForm(){
         return false;
     }
     else if(age < 1){
-        alert("Age must not be 0 or less than zero")
+        alert("Age must not be 0 or less than zero");
         return false;
     }
 
@@ -27,7 +28,7 @@ function validateForm(){
         alert("Email is required");
         return false;
     }
-    else if(!email.include(@)){
+    else if(!email.includes("@")){
         alert("Invert email address");
         return false;
     }
@@ -36,7 +37,74 @@ function validateForm(){
 
 }
 
+//function to show data
 function showData(){
     var peopleList;
-    if
+    if(localStorage.getItem("peopleList") == null){
+        peopleList = [];
+    }
+    else{
+        peopleList = JSON.parse(localStorage.getItem("peopleList"))
+    }
+
+    var html = ""
+    peopleList.forEach(function (element,index){
+        html += "<tr>";
+        html += "<td>" + element.name + "</td>";
+        html += "<td>" + element.age + "</td>";
+        html += "<td>" + element.address + "</td>";
+        html += "<td>" + element.email + "</td>";
+        html += '<td><button onclick="deleteData('+ index +')"class = "btn btn-danger">Delete</button><button onclick="updateData('+ index +')"class = "btn btn-warning m-2">Edit</button></td>';
+        html += "</tr>";
+    });
+
+    document.querySelector("#crudTable tbody").innerHTML = html;
+}
+
+//load all data when document is updated
+document.onload = showData();
+
+//function to add data
+
+function AddData(){
+    if(validateForm() == true){
+        var name = document.getElementById("name").value;
+        var age = document.getElementById("age").value;
+        var address = document.getElementById("address").value;
+        var email = document.getElementById("email").value;
+        
+
+    var peopleList;
+    if(localStorage.getItem("peopleList")== null){
+        peopleList = [];
+    }
+    else{
+        peopleList = JSON.parse(localStorage.getItem("peopleList"));
+    }
+
+    peopleList.push({name:name , age: age , address:address,email:email,});
+
+    localStorage.setItem("peopleList", JSON.stringify(peopleList));
+    showData();
+    document.getElementById("name").value = "";
+    document.getElementById("age").value = "";
+    document.getElementById("address").value = "";
+    document.getElementById("email").value = "";
+    }
+}
+
+//function to delete data 
+
+function deleteData(index){
+    var peopleList;
+    if(localStorage.getItem("peopleList") == null){
+        peopleList = [];
+    }
+    else{
+        peopleList = JSON.parse(localStorage.getItem("peopleList"));
+    }
+
+    peopleList.splice(index, 1);
+    localStorage.setItem("peopleList", JSON.stringify(peopleList));
+    showData();
 }
